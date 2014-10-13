@@ -1,6 +1,6 @@
 # ACF Frontend form
 
-![Image of UiGEN Roadmap](https://github.com/dadmor/ACF_frontend_display/blob/master/banner-772x250.png)
+(https://github.com/dadmor/ACF_frontend_display/blob/master/banner-772x250.png)
 
 Welcome to the official repository for ACF Frontend form WordPress plugin.
 
