@@ -1,13 +1,13 @@
 <?php
 /*
 Plugin Name: ACF frontend display
-Plugin URI: http://getblockbox.com/ACF_frontend/
-Description: WordPress plugin to display ACF form on frontend your site. This Plugin enhancing the Advanced Custom Fields (ACF) 
+Plugin URI: http://getblockbox.com/acf_frontend/
+Description: WordPress plugin to display afd form on frontend your site. This Plugin enhancing the Advanced Custom Fields (ACF) 
 Author: gdurtan
 Author URI: grzegorz.durtan.pl
 */
 
-function alpaca_lib_init() {
+function afd_alpaca_lib_init() {
 
 	wp_register_script( 'jquery-tmpl',  plugins_url().'/ACF_frontend_display/js/jquery.tmpl.js');
 	wp_enqueue_script( 'jquery-tmpl' );
@@ -20,13 +20,13 @@ function alpaca_lib_init() {
 	wp_enqueue_style('alpaca-css');
 
 }
-add_action('admin_enqueue_scripts', 'alpaca_lib_init');
+add_action('admin_enqueue_scripts', 'afd_alpaca_lib_init');
 
-require_once( ABSPATH . 'wp-content/plugins/ACF_frontend_display/inc/acf_extend_api.php' );
+require_once( ABSPATH . 'wp-content/plugins/ACF_frontend_display/inc/afd_acf_extend_api.php' );
 
 /* METABOX start ------------------------------------ */
 
-function acf_frontend_add_meta_box() {
+function afd_frontend_add_meta_box() {
 
 	$screens = array( 'post', 'page' );
 
@@ -34,29 +34,29 @@ function acf_frontend_add_meta_box() {
 
 		add_meta_box(
 			'myplugin_sectionid',
-			__( 'ACF - view form on front of page', 'myplugin_textdomain' ),
-			'acf_frontend_meta_box_callback',
+			__( 'afd - view form on front of page', 'myplugin_textdomain' ),
+			'afd_frontend_meta_box_callback',
 			$screen,
 			'side'
 		);
 
 	}
 }
-add_action( 'add_meta_boxes', 'acf_frontend_add_meta_box');
+add_action( 'add_meta_boxes', 'afd_frontend_add_meta_box');
 
-function acf_frontend_meta_box_callback( $post ) {
+function afd_frontend_meta_box_callback( $post ) {
 
 	// Add an nonce field so we can check for it later.
-	wp_nonce_field( 'acf_frontend_meta_box', 'acf_frontend_meta_box_nonce' );
+	wp_nonce_field( 'afd_frontend_meta_box', 'afd_frontend_meta_box_nonce' );
 
 	/*
 	 * Use get_post_meta() to retrieve an existing value
 	 * from the database and use the value for the form.
 	 */
-	$value_render = get_post_meta( $post->ID, '_meta_acf_form_render_box_key', true );
-	$value_alpaca = get_post_meta( $post->ID, '_meta_acf_form_render_box_alpaca', true );
+	$value_render = get_post_meta( $post->ID, '_meta_afd_form_render_box_key', true );
+	$value_alpaca = get_post_meta( $post->ID, '_meta_afd_form_render_box_alpaca', true );
 	
-	//echo '<input type="checkbox" id="acf_form_render_box_field" name="acf_form_render_box_field" value="' . esc_attr( $value ) . '" size="25" />';
+	//echo '<input type="checkbox" id="afd_form_render_box_field" name="afd_form_render_box_field" value="' . esc_attr( $value ) . '" size="25" />';
 
 	if(esc_attr( $value_render ) == 'true'){
 		$checked = 'checked=checked';
@@ -64,22 +64,24 @@ function acf_frontend_meta_box_callback( $post ) {
 		$checked = '';
 	}
 
-	if(acf_form_permision() == true){
+	if(afd_form_permision() == true){
 		
-		echo '<input type="checkbox" id="acf_form_render_box_field" name="acf_form_render_box_field" value="true" size="25" '.$checked.'/>';
-		echo '<label for="acf_form_render_box_field">';
+		echo '<input type="checkbox" id="afd_form_render_box_field" name="afd_form_render_box_field" value="true" size="25" '.$checked.'/>';
+		echo '<label for="afd_form_render_box_field">';
 		_e( 'check it to display your ACF form', 'myplugin_textdomain' );
 		echo '</label> ';
 
-		echo '<input type="hidden" id="acf_alpaca_data" name="acf_alpaca_data" value="'.$value_alpaca.'" size="25" />';
+		echo '<input type="hidden" id="afd_alpaca_data" name="afd_alpaca_data" value="'.$value_alpaca.'" size="25" />';
 
 		?>
-		<div id="ACF_display_more_options" style=""></div> 
+		<div id="afd_display_more_options" style=""></div> 
 		<script type="text/javascript">
 			jQuery(document).ready(function($) {
-			    $("#ACF_display_more_options").alpaca({
+			    $("#afd_display_more_options").alpaca({
 			    /* ----------------------------------------------------------------------- */	
+			    	<?php if($value_alpaca != ''){ ?>
 			    	"data" : <?php echo urldecode ( $value_alpaca );?>,
+			    	<? } ?>
 			    	"options": {
 			    		"fields": {
 		                	"dependence_one": {
@@ -102,7 +104,7 @@ function acf_frontend_meta_box_callback( $post ) {
 							"type": "string",
 							"title": "ID",
 							"dependencies": "dependence_one",
-							"description": "A unique identifier for the form. Defaults to ‘acf-form’"
+							"description": "A unique identifier for the form. Defaults to ‘afd-form’"
 				        },
 				        "post_id": {
 							"type": "string",
@@ -183,18 +185,18 @@ function acf_frontend_meta_box_callback( $post ) {
 							"type": "string",
 							"title": "Field element",
 							"dependencies": "dependence_one",
-							"enum": ['standard ACF', 'bootstrap', 'contactform7']
+							"enum": ['standard afd', 'bootstrap', 'contactform7']
 				        },*/
 		        
 				      }
 				    },
 			    /* ----------------------------------------------------------------------- */
 				    "postRender": function(renderedForm) {          
-		              $('#ACF_display_more_options select, #ACF_display_more_options input, #ACF_display_more_options textarea').live('change',function() {   
+		              $('#afd_display_more_options select, #afd_display_more_options input, #afd_display_more_options textarea').live('change',function() {   
 		              		
 		                //if (renderedForm.isValid(true)) {
 		                  var val = renderedForm.getValue();
-		                  $('#acf_alpaca_data').val(encodeURIComponent(JSON.stringify(val)));
+		                  $('#afd_alpaca_data').val(encodeURIComponent(JSON.stringify(val)));
 
 		                 // $('#<?php echo $my_widget_id."-extra-data"; ?>').val(encodeURIComponent(JSON.stringify(val))); 
 		                //}
@@ -207,7 +209,7 @@ function acf_frontend_meta_box_callback( $post ) {
 		<?php
 
 		}else{
-			echo 'add <a href="'.get_bloginfo('home').'/wp-admin/edit.php?post_type=acf">ACF form</a> to this post';
+			echo 'add <a href="'.get_bloginfo('home').'/wp-admin/edit.php?post_type=acf">acf form</a> to this post';
 		}
 
 	}
@@ -217,7 +219,7 @@ function acf_frontend_meta_box_callback( $post ) {
  *
  * @param int $post_id The ID of the post being saved.
  */
-function myplugin_save_meta_box_data( $post_id ) {
+function afd_save_meta_box_data( $post_id ) {
 
 	/*
 	 * We need to verify this came from our screen and with proper authorization,
@@ -225,12 +227,12 @@ function myplugin_save_meta_box_data( $post_id ) {
 	 */
 
 	// Check if our nonce is set.
-	if ( ! isset( $_POST['acf_frontend_meta_box_nonce'] ) ) {
+	if ( ! isset( $_POST['afd_frontend_meta_box_nonce'] ) ) {
 		return;
 	}
 
 	// Verify that the nonce is valid.
-	if ( ! wp_verify_nonce( $_POST['acf_frontend_meta_box_nonce'], 'acf_frontend_meta_box' ) ) {
+	if ( ! wp_verify_nonce( $_POST['afd_frontend_meta_box_nonce'], 'afd_frontend_meta_box' ) ) {
 		return;
 	}
 
@@ -254,25 +256,25 @@ function myplugin_save_meta_box_data( $post_id ) {
 	}
 
 	// Sanitize user input.
-	$my_data_acf_render = sanitize_text_field( $_POST['acf_form_render_box_field'] );
-	$my_data_acf_alpaca = $_POST['acf_alpaca_data'];
+	$my_data_afd_render = sanitize_text_field( $_POST['afd_form_render_box_field'] );
+	$my_data_afd_alpaca = $_POST['afd_alpaca_data'];
 
 	// Update the meta field in the database.
-	update_post_meta( $post_id, '_meta_acf_form_render_box_key', $my_data_acf_render );
-	update_post_meta( $post_id, '_meta_acf_form_render_box_alpaca', $my_data_acf_alpaca );
+	update_post_meta( $post_id, '_meta_afd_form_render_box_key', $my_data_afd_render );
+	update_post_meta( $post_id, '_meta_afd_form_render_box_alpaca', $my_data_afd_alpaca );
 }
-add_action( 'save_post', 'myplugin_save_meta_box_data' );
+add_action( 'save_post', 'afd_save_meta_box_data' );
 
 /* METABOX end ------------------------------------ */
 
 
 /* DISPLAY filter ------------------------------------ */
 
-function add_acf_form_to_frontend_page($content) {
+function afd_add_form_to_frontend_page($content) {
     
-	/* IMPORTANT !!! ACF bug fix - disable NOW                       */
+	/* IMPORTANT !!! afd bug fix - disable NOW                       */
 	/* This script dont't work in wp_enqueue_script method           */
-	/* ACF plugin call to it before wp_enqueue finished load         */
+	/* afd plugin call to it before wp_enqueue finished load         */
 	//echo '<script src="'.plugins_url().'/advanced-custom-fields/js/input.js" type="text/javascript" charset="utf-8"></script>';  
 	//echo '<script src="'.plugins_url().'/advanced-custom-fields/js/field-group.min.js" type="text/javascript" charset="utf-8"></script>'; 
 	/* ------------------------------------------------------------- */
@@ -280,7 +282,7 @@ function add_acf_form_to_frontend_page($content) {
     acf_form_head();
     wp_deregister_style( 'wp-admin' );
     global $post;
-	$args = json_decode( urldecode ( get_post_meta($post->ID,'_meta_acf_form_render_box_alpaca', true )), true );
+	$args = json_decode( urldecode ( get_post_meta($post->ID,'_meta_afd_form_render_box_alpaca', true )), true );
 	unset($args['dependence_one']);
 
     echo '<div>'.$content.'<div>';
@@ -288,19 +290,19 @@ function add_acf_form_to_frontend_page($content) {
 
     	if( empty($args) == true){
 		
-			/* acf_frontend_form() is acf_form() extended method */
-			acf_frontend_form();
+			/* afd_frontend_form() is afd_form() extended method */
+			afd_frontend_form();
 
 		}else{
 
-			/* acf_frontend_form() is acf_form() extended method */
-			acf_frontend_form($args);
+			/* afd_frontend_form() is afd_form() extended method */
+			afd_frontend_form($args);
 
 		}
 
     echo '</div>';
 }
-add_filter( 'the_content', 'add_acf_form_to_frontend_page', 6); 
+add_filter( 'the_content', 'afd_add_form_to_frontend_page', 6); 
 
 
 

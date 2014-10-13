@@ -1,6 +1,6 @@
 <?php
 
-function acf_form_permision( $options = array() )
+function afd_form_permision( $options = array() )
 {
     global $post;
     
@@ -40,7 +40,7 @@ function acf_form_permision( $options = array() )
 }
 
 
-function acf_frontend_form( $options = array() )
+function afd_frontend_form( $options = array() )
 {
     global $post;
     

@@ -28,8 +28,19 @@ Upload the ACF Frontend display plugin to your blog, Activate it.
 
 == Changelog ==
 
+= 1.0.1 =
+* Add {afd} namespaces to variables and methods
+* Add plugin screenshots 
+* rename acf_frontend_form() and acf_form_permision() to afd_frontend_form() and afd_form_permision()
+
 = 1.0.0 =
 * Add metabox into pages and posts to activate ACF frontend form.
 * Add two extended API method: acf_frontend_form() and acf_form_permision() 
 * Add extra form to set arguments into acf_frontend_form()
 * Check link between ACF form and post. Is false message about it.
+
+== Screenshots ==
+
+1. Activate frontend display form
+2. More ACF form options
+
