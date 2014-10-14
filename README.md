@@ -6,11 +6,13 @@
 
 ![screen1](https://github.com/dadmor/ACF_frontend_display/blob/master/screenshot-1.png)
 
+-----------------------
 
+# Comming soon
 
-Welcome to the official repository for ACF Frontend form WordPress plugin.
-
-* GitHub : https://github.com/dadmor/ACF_frontend_display
+* Frontend file upload field (no js error fixed #ACF bug)
+* Repeater meta form with taxonomy dictionary (single and multilevel) Storage data with metas (no serial data)
+* Form proccessor used script based on WordPress API
 
 -----------------------
 
