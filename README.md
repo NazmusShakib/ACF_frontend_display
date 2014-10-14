@@ -2,9 +2,11 @@
 
 ![banner](https://github.com/dadmor/ACF_frontend_display/blob/master/banner-772x250.png)
 
+![screen2](https://github.com/dadmor/ACF_frontend_display/blob/master/screenshot-2.png)
+
 ![screen1](https://github.com/dadmor/ACF_frontend_display/blob/master/screenshot-1.png)
 
-![screen2](https://github.com/dadmor/ACF_frontend_display/blob/master/screenshot-2.png)
+
 
 Welcome to the official repository for ACF Frontend form WordPress plugin.
 
