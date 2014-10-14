@@ -12,7 +12,7 @@
 
 * Frontend file upload field (no js error fixed #ACF bug)
 * Repeater meta form with taxonomy dictionary (single and multilevel) Storage data with metas (no serial data)
-* Form proccessor used script based on WordPress API
+* Form proccessor used script based on WordPress API. Included class from http://getblockbox.com/executor_sandbox/wp_executor/
 
 -----------------------
 
