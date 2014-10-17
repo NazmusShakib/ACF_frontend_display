@@ -11,6 +11,9 @@
 # Comming soon
 
 * Frontend file upload field (no js error fixed #ACF bug)
+* Frontend date picker (no js error fixed #ACF bug)
+* Frontend color picker (no js error fixed #ACF bug)
+* Frontend google maps (no js error fixed #ACF bug)
 * Repeater meta form with taxonomy dictionary (single and multilevel) Storage data with metas (no serial data)
 * Form proccessor used script based on WordPress API. Included class from http://getblockbox.com/executor_sandbox/wp_executor/
 
