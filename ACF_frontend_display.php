@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: ACF frontend display
-Plugin URI: http://getblockbox.com/acf_frontend/
+Plugin URI: https://github.com/dadmor/ACF_frontend_display
 Description: WordPress plugin to display afd form on frontend your site. This Plugin enhancing the Advanced Custom Fields (ACF) 
 Author: gdurtan
 Author URI: grzegorz.durtan.pl
