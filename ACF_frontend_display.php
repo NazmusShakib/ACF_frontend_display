@@ -28,8 +28,12 @@ require_once( plugin_dir_path( __FILE__ ) . '/inc/afd_acf_extend_api.php' );
 /* METABOX start ------------------------------------ */
 
 function afd_frontend_add_meta_box() {
-
-	$screens = array( 'post', 'page' );
+	
+	$post_types = get_post_types( '', 'names' ); 
+	
+	foreach ( $post_types as $key => $value) {
+		$screens[] = $key;
+	}
 
 	foreach ( $screens as $screen ) {
 
