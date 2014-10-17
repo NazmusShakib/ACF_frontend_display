@@ -296,21 +296,26 @@ function afd_add_form_to_frontend_page($content) {
 	unset($args['dependence_one']);
 
     echo '<div>'.$content.'<div>';
-   	echo '<div class="site-main">';
 
-    	if( empty($args) == true){
-		
-			/* afd_frontend_form() is afd_form() extended method */
-			afd_frontend_form();
+    /* check display guardian */
+    if( get_post_meta( $post->ID, '_meta_afd_form_render_box_key', true) == 'true'){
+	   	
+	   	echo '<div class="site-main">';
 
-		}else{
+	    	if( empty($args) == true){
+			
+				/* afd_frontend_form() is afd_form() extended method */
+				afd_frontend_form();
 
-			/* afd_frontend_form() is afd_form() extended method */
-			afd_frontend_form($args);
+			}else{
 
-		}
+				/* afd_frontend_form() is afd_form() extended method */
+				afd_frontend_form($args);
 
-    echo '</div>';
+			}
+
+	    echo '</div>';
+	}
 }
 add_filter( 'the_content', 'afd_add_form_to_frontend_page', 6); 
 
