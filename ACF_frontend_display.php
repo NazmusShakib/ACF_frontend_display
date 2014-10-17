@@ -29,6 +29,7 @@ require_once( plugin_dir_path( __FILE__ ) . '/inc/afd_acf_extend_api.php' );
 
 function afd_frontend_add_meta_box() {
 	
+	/* build post types array to display ACF frontend metabox */
 	$post_types = get_post_types( '', 'names' ); 
 	
 	foreach ( $post_types as $key => $value) {
@@ -37,14 +38,18 @@ function afd_frontend_add_meta_box() {
 
 	foreach ( $screens as $screen ) {
 
-		add_meta_box(
-			'myplugin_sectionid',
-			__( 'afd - view form on front of page', 'myplugin_textdomain' ),
-			'afd_frontend_meta_box_callback',
-			$screen,
-			'side'
-		);
+		/* only editors or administrator can display forms */
+		if( current_user_can('edit_others_pages') ) {  
 
+			/* display ACF frontend metabox */
+			add_meta_box(
+				'myplugin_sectionid',
+				__( 'afd - view form on front of page', 'myplugin_textdomain' ),
+				'afd_frontend_meta_box_callback',
+				$screen,
+				'side'
+			);
+ 		} 
 	}
 }
 add_action( 'add_meta_boxes', 'afd_frontend_add_meta_box');
