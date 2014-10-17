@@ -9,11 +9,7 @@ Author URI: grzegorz.durtan.pl
 
 function afd_alpaca_lib_init() {
 
-	wp_register_script( 'jquery-tmpl', plugins_url('/js/jquery.tmpl.js', __FILE__) );
-	wp_enqueue_script( 'jquery-tmpl' );
-
-	//wp_register_script( 'alpaca-js', 'http://www.alpacajs.org/js/alpaca.min.js');
-	wp_register_script( 'alpaca-js', plugins_url('/js/alpaca.js', __FILE__) );
+	wp_register_script( 'alpaca-js', plugins_url('/js/alpaca-core.min.js', __FILE__) );
 	wp_enqueue_script( 'alpaca-js' );
 
 	wp_register_style( 'alpaca-css', plugins_url('/css/alpaca-wpadmin.css', __FILE__) );
