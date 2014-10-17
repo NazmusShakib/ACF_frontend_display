@@ -22,7 +22,8 @@ function afd_alpaca_lib_init() {
 }
 add_action('admin_enqueue_scripts', 'afd_alpaca_lib_init');
 
-require_once( WP_PLUGIN_DIR . '/ACF_frontend_display/inc/afd_acf_extend_api.php' );
+require_once( plugin_dir_path( __FILE__ ) . '/inc/afd_acf_extend_api.php' );
+
 
 /* METABOX start ------------------------------------ */
 
