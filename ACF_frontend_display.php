@@ -43,13 +43,19 @@ function afd_frontend_add_meta_box() {
 
 	foreach ( $screens as $screen ) {
 
+
+
 		/* only editors or administrator can display forms */
 		if( current_user_can('edit_others_pages') ) {  
-
+			if( $screen == 'acf' ){
+				$title_box = __( 'AFD - front form GLOBALS', 'myplugin_textdomain' );
+			}else{
+				$title_box = __( 'AFD - view form on front of page', 'myplugin_textdomain' );
+			}
 			/* display ACF frontend metabox */
 			add_meta_box(
 				'myplugin_sectionid',
-				__( 'afd - view form on front of page', 'myplugin_textdomain' ),
+				$title_box,
 				'afd_frontend_meta_box_callback',
 				$screen,
 				'side'
@@ -60,6 +66,13 @@ function afd_frontend_add_meta_box() {
 add_action( 'add_meta_boxes', 'afd_frontend_add_meta_box');
 
 function afd_frontend_meta_box_callback( $post ) {
+
+	/* create global guardian */
+	if( get_post_type( $post->ID ) == 'acf'){
+		$gloabal_guardian = false;
+		echo '<div style="font-weight:bold; border-bottom:1px solid #eee; margin-bottom:10px; padding-bottom:5px">Global properties for '.$post->post_title.'</div>';
+	}
+	//var_dump(get_post_custom_keys($post_id));
 
 	// Add an nonce field so we can check for it later.
 	wp_nonce_field( 'afd_frontend_meta_box', 'afd_frontend_meta_box_nonce' );
@@ -81,6 +94,9 @@ function afd_frontend_meta_box_callback( $post ) {
 
 	if(afd_form_permision() == true){
 		
+		
+
+
 		echo '<input type="checkbox" id="afd_form_render_box_field" name="afd_form_render_box_field" value="true" size="25" '.$checked.'/>';
 		echo '<label for="afd_form_render_box_field">';
 		_e( 'check it to display your ACF form', 'myplugin_textdomain' );
@@ -227,6 +243,9 @@ function afd_frontend_meta_box_callback( $post ) {
 			echo 'add <a href="'.get_bloginfo('home').'/wp-admin/edit.php?post_type=acf">acf form</a> to this post';
 		}
 
+
+		
+
 	}
 
 /**
@@ -280,6 +299,8 @@ function afd_save_meta_box_data( $post_id ) {
 }
 add_action( 'save_post', 'afd_save_meta_box_data' );
 
+
+
 /* METABOX end ------------------------------------ */
 
 
@@ -321,5 +342,7 @@ function afd_add_form_to_frontend_page($content) {
 
 	    echo '</div>';
 	}
+
+
 }
-add_filter( 'the_content', 'afd_add_form_to_frontend_page', 6 );
+add_filter( 'the_content', 'afd_add_form_to_frontend_page', 6);
