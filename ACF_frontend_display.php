@@ -72,7 +72,14 @@ function afd_frontend_meta_box_callback( $post ) {
 		$gloabal_guardian = false;
 		echo '<div style="font-weight:bold; border-bottom:1px solid #eee; margin-bottom:10px; padding-bottom:5px">Global properties for '.$post->post_title.'</div>';
 	}
-	//var_dump(get_post_custom_keys($post_id));
+	/* check is globals are defined (in first fieldgroup) */
+	$fieldsArray = apply_filters('acf/get_field_groups', array());
+	$global_form_id = $fieldsArray[0]['id'];
+
+	$global_render = get_post_meta( $global_form_id, '_meta_afd_form_render_box_key', true );
+	$global_alpaca = get_post_meta( $global_form_id, '_meta_afd_form_render_box_alpaca', true );
+	
+
 
 	// Add an nonce field so we can check for it later.
 	wp_nonce_field( 'afd_frontend_meta_box', 'afd_frontend_meta_box_nonce' );
@@ -81,8 +88,20 @@ function afd_frontend_meta_box_callback( $post ) {
 	 * Use get_post_meta() to retrieve an existing value
 	 * from the database and use the value for the form.
 	 */
+	$create_object = get_post_meta( $post->ID, '_meta_afd_form_create_object', true ); // bolean
 	$value_render = get_post_meta( $post->ID, '_meta_afd_form_render_box_key', true );
 	$value_alpaca = get_post_meta( $post->ID, '_meta_afd_form_render_box_alpaca', true );
+	
+	/* overwrite lolal settings for global settings */
+	if($global_render != ''){
+		/* insert global data olny with create new post (no edit) */
+		if($create_object != 'false'){
+			$value_render = $global_render;
+			$value_alpaca = $global_alpaca;
+		}
+	}
+	
+
 	
 	//echo '<input type="checkbox" id="afd_form_render_box_field" name="afd_form_render_box_field" value="' . esc_attr( $value ) . '" size="25" />';
 
@@ -95,7 +114,7 @@ function afd_frontend_meta_box_callback( $post ) {
 	if(afd_form_permision() == true){
 		
 		
-
+		echo '<input type="hidden" id="afd_create_object" name="afd_create_object" value="'.$create_object.'" size="25" />';
 
 		echo '<input type="checkbox" id="afd_form_render_box_field" name="afd_form_render_box_field" value="true" size="25" '.$checked.'/>';
 		echo '<label for="afd_form_render_box_field">';
@@ -117,7 +136,19 @@ function afd_frontend_meta_box_callback( $post ) {
 			    		"fields": {
 		                	"dependence_one": {
 		                    	"rightLabel": "check it to show extended props"
-		               		}
+		               		},
+		               		"dependence_two": {
+		                    	"rightLabel": "check it to show extra ACTIONS"
+		               		},
+		               		"send_email": {
+		                    	"rightLabel": "send email (with next version)",
+		               		},
+		               		"register_user": {
+		                    	"rightLabel": "register user (with next version)",
+		               		},
+		               		"target_quiz": {
+		                    	"rightLabel": "target quiz (with next version)"
+		               		},
 		               	}
 			    	},
 			    	"schema": {
@@ -218,6 +249,32 @@ function afd_frontend_meta_box_callback( $post ) {
 							"dependencies": "dependence_one",
 							"enum": ['standard afd', 'bootstrap', 'contactform7']
 				        },*/
+
+				        "dependence_two": {
+		                    "title": "Extra ACTIONS",
+		                    "type": "boolean"
+		                },
+
+		                "send_email": {
+		                    /*"title": "send email",*/
+		                    "type": "boolean",
+		                    "dependencies": "dependence_two",
+		                     "readonly": true
+		                },
+		                "register_user": {
+		                    /*"title": "register user",*/
+		                    "type": "boolean",
+		                    "dependencies": "dependence_two",
+		                     "readonly": true
+		                 
+		                },
+		                "target_quiz": {
+		                   /* "title": "target quiz",*/
+		                    "type": "boolean",
+		                    "dependencies": "dependence_two",
+		                    "readonly": true
+
+		                },
 		        
 				      }
 				    },
@@ -292,8 +349,13 @@ function afd_save_meta_box_data( $post_id ) {
 	// Sanitize user input.
 	$my_data_afd_render = sanitize_text_field( $_POST['afd_form_render_box_field'] );
 	$my_data_afd_alpaca = $_POST['afd_alpaca_data'];
+	$my_data_afd_create_object = $_POST['afd_create_object'];
+	if($my_data_afd_create_object == ''){
+		$my_data_afd_create_object = 'false';
+	}
 
 	// Update the meta field in the database.
+	update_post_meta( $post_id, '_meta_afd_form_create_object', $my_data_afd_create_object );
 	update_post_meta( $post_id, '_meta_afd_form_render_box_key', $my_data_afd_render );
 	update_post_meta( $post_id, '_meta_afd_form_render_box_alpaca', $my_data_afd_alpaca );
 }
@@ -346,3 +408,4 @@ function afd_add_form_to_frontend_page($content) {
 
 }
 add_filter( 'the_content', 'afd_add_form_to_frontend_page', 6);
+?>
