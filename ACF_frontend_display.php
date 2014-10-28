@@ -17,6 +17,10 @@ function afd_alpaca_lib_init() {
 	wp_register_style( 'alpaca-css', plugins_url('/css/alpaca-wpadmin.css', __FILE__) );
 	wp_enqueue_style('alpaca-css');
 
+	/* toggle-switch extra field */
+	wp_register_style( 'toggle-switch-css', plugins_url('/css/toggle-switch.css', __FILE__) );
+	wp_enqueue_style('toggle-switch-css');
+
 }
 add_action('admin_enqueue_scripts', 'afd_alpaca_lib_init');
 
@@ -26,8 +30,9 @@ require_once( plugin_dir_path( __FILE__ ) . '/inc/afd_acf_extend_api.php' );
 function afd_upload_field() {
 	
 	//require_once( plugin_dir_path( __FILE__ ) . '/fields-pack/field-upload-file.php');
+	require_once( plugin_dir_path( __FILE__ ) . '/fields-pack/field-poolAB-file.php');
 }
-//add_action('acf/register_fields', 'afd_upload_field');
+add_action('acf/register_fields', 'afd_upload_field');
 
 
 /* METABOX start ------------------------------------ */
@@ -123,8 +128,7 @@ function afd_frontend_meta_box_callback( $post ) {
 
 		echo '<input type="hidden" id="afd_alpaca_data" name="afd_alpaca_data" value="'.$value_alpaca.'" size="25" />';
 
-		?>
-		<div id="afd_display_more_options" style=""></div> 
+		?><div id="afd_display_more_options" style=""></div> 
 		<script type="text/javascript">
 			jQuery(document).ready(function($) {
 			    $("#afd_display_more_options").alpaca({
@@ -293,17 +297,13 @@ function afd_frontend_meta_box_callback( $post ) {
 	            /* ----------------------------------------------------------------------- */
 			  });
 			});
-		</script>
-		<?php
+		</script><?php
 
-		}else{
-			echo 'add <a href="'.get_bloginfo('home').'/wp-admin/edit.php?post_type=acf">acf form</a> to this post';
-		}
-
-
-		
-
+	}else{
+		echo 'add <a href="'.get_bloginfo('home').'/wp-admin/edit.php?post_type=acf">acf form</a> to this post';
 	}
+
+}
 
 /**
  * When the post is saved, saves our custom data.
