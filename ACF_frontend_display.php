@@ -53,9 +53,9 @@ function afd_frontend_add_meta_box() {
 		/* only editors or administrator can display forms */
 		if( current_user_can('edit_others_pages') ) {  
 			if( $screen == 'acf' ){
-				$title_box = __( 'AFD - front form GLOBALS', 'myplugin_textdomain' );
+				$title_box = __( 'AFD - front form GLOBALS', 'acf_frontend_display' );
 			}else{
-				$title_box = __( 'AFD - view form on front of page', 'myplugin_textdomain' );
+				$title_box = __( 'AFD - view form on front of page', 'acf_frontend_display' );
 			}
 			/* display ACF frontend metabox */
 			add_meta_box(
@@ -123,7 +123,7 @@ function afd_frontend_meta_box_callback( $post ) {
 
 		echo '<input type="checkbox" id="afd_form_render_box_field" name="afd_form_render_box_field" value="true" size="25" '.$checked.'/>';
 		echo '<label for="afd_form_render_box_field">';
-		_e( 'check it to display your ACF form', 'myplugin_textdomain' );
+		_e( 'check it to display your ACF form', 'acf_frontend_display' );
 		echo '</label> ';
 
 		echo '<input type="hidden" id="afd_alpaca_data" name="afd_alpaca_data" value="'.$value_alpaca.'" size="25" />';
@@ -377,7 +377,7 @@ function afd_add_form_to_frontend_page($content) {
 	//echo '<script src="'.plugins_url().'/advanced-custom-fields/js/field-group.min.js" type="text/javascript" charset="utf-8"></script>'; 
 	/* ------------------------------------------------------------- */
     
-    acf_form_head();
+    afd_form_head();
     wp_deregister_style( 'wp-admin' );
     global $post;
 	$args = json_decode( urldecode ( get_post_meta($post->ID,'_meta_afd_form_render_box_alpaca', true )), true );

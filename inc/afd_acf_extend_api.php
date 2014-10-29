@@ -196,4 +196,57 @@ function afd_frontend_form( $options = array() )
     <?php endif;
 }
 
+function afd_form_head()
+{
+    // global vars
+    global $post_id;
+
+
+
+    
+    // verify nonce
+    if( isset($_POST['acf_nonce']) && wp_verify_nonce($_POST['acf_nonce'], 'input') )
+    {
+        
+
+
+        // $post_id to save against
+        $post_id = $_POST['post_id'];
+        
+        
+        // allow for custom save
+        $post_id = apply_filters('acf/pre_save_post', $post_id);
+        
+        
+        // save the data
+        do_action('acf/save_post', $post_id);   
+
+
+        /* ADF + Forms Actions resoult */
+        $fa = fa_realize_form_actions();
+
+        // redirect
+        if(isset($_POST['return']))
+        {
+            wp_redirect($_POST['return']);
+            exit;
+        }
+
+
+    }
+    
+    
+    // need wp styling
+    wp_enqueue_style(array(
+        'colors-fresh'
+    ));
+    
+        
+    // actions
+    do_action('acf/input/admin_enqueue_scripts');
+
+    add_action('wp_head', 'acf_form_wp_head');
+    
+}
+
 ?>
