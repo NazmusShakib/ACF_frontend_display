@@ -24,6 +24,15 @@ function afd_alpaca_lib_init() {
 }
 add_action('admin_enqueue_scripts', 'afd_alpaca_lib_init');
 
+function afd_fields_lib_init() {
+	/* toggle-switch extra field */
+	wp_register_style( 'toggle-switch-css', plugins_url('/css/toggle-switch.css', __FILE__) );
+	wp_enqueue_style('toggle-switch-css');
+
+}
+add_action('wp_enqueue_scripts', 'afd_fields_lib_init');
+
+
 require_once( plugin_dir_path( __FILE__ ) . '/inc/afd_acf_extend_api.php' );
 
 /* ACF EXTENTION - INIT UPLAOAD FILE */
@@ -377,8 +386,10 @@ function afd_add_form_to_frontend_page($content) {
 	//echo '<script src="'.plugins_url().'/advanced-custom-fields/js/field-group.min.js" type="text/javascript" charset="utf-8"></script>'; 
 	/* ------------------------------------------------------------- */
     
-    afd_form_head();
+    acf_form_head();
+    
     wp_deregister_style( 'wp-admin' );
+    
     global $post;
 	$args = json_decode( urldecode ( get_post_meta($post->ID,'_meta_afd_form_render_box_alpaca', true )), true );
 	unset($args['dependence_one']);

@@ -223,7 +223,8 @@ function afd_form_head()
 
 
         /* ADF + Forms Actions resoult */
-        $fa = fa_realize_form_actions();
+        call_user_func('fa_realize_form_actions'); 
+        //$fa = fa_realize_form_actions();
 
         // redirect
         if(isset($_POST['return']))
@@ -243,7 +244,7 @@ function afd_form_head()
     
         
     // actions
-    do_action('acf/input/admin_enqueue_scripts');
+    //do_action('acf/input/admin_enqueue_scripts');
 
     add_action('wp_head', 'acf_form_wp_head');
     
