@@ -57,8 +57,6 @@ function afd_frontend_add_meta_box() {
 
 	foreach ( $screens as $screen ) {
 
-
-
 		/* only editors or administrator can display forms */
 		if( current_user_can('edit_others_pages') ) {  
 			if( $screen == 'acf' ){
@@ -92,8 +90,6 @@ function afd_frontend_meta_box_callback( $post ) {
 
 	$global_render = get_post_meta( $global_form_id, '_meta_afd_form_render_box_key', true );
 	$global_alpaca = get_post_meta( $global_form_id, '_meta_afd_form_render_box_alpaca', true );
-	
-
 
 	// Add an nonce field so we can check for it later.
 	wp_nonce_field( 'afd_frontend_meta_box', 'afd_frontend_meta_box_nonce' );
@@ -386,7 +382,7 @@ function afd_add_form_to_frontend_page($content) {
 	//echo '<script src="'.plugins_url().'/advanced-custom-fields/js/field-group.min.js" type="text/javascript" charset="utf-8"></script>'; 
 	/* ------------------------------------------------------------- */
     
-    acf_form_head();
+    afd_form_head();
     
     wp_deregister_style( 'wp-admin' );
     

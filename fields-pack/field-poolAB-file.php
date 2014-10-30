@@ -1,11 +1,12 @@
 <?php
 
-class acf_uigen_uploader extends acf_field
+class acf_afd_pool_ab extends acf_field
 {
 
-	// vars
+		// vars
 	var $settings, // will hold info such as dir / path
 		$defaults; // will hold default field options
+		
 		
 	/*
 	*  __construct
@@ -19,31 +20,81 @@ class acf_uigen_uploader extends acf_field
 	function __construct()
 	{
 		// vars
-		$this->name = 'uigen_uploader';
-		$this->label = __("FronEnd Uploader",'uigen_uploader');
-		$this->category = __("FrontEnd",'acf');
+		$this->name = 'afd_pool_ab';
+		$this->label = __('FrontEnd Pool AB');
+		$this->category = __("Front End",'acf'); // Basic, Content, Choice, etc
 		$this->defaults = array(
-			'default_value'	=>	'',
-			'maxlength'		=>	'',
-			'placeholder'	=>	'',
-			'prepend'		=>	'',
-			'append'		=>	''
+			// add default here to merge into your field. 
+			// This makes life easy when creating the field options as you don't need to use any if( isset('') ) logic. eg:
+			//'pool_ab' => 'thumbnail'
 		);
 		
 		
 		// do not delete!
     	parent::__construct();
-		
-		// settings
+    	
+    	
+    	// settings
 		$this->settings = array(
 			'path' => apply_filters('acf/helpers/get_path', __FILE__),
 			'dir' => apply_filters('acf/helpers/get_dir', __FILE__),
 			'version' => '1.0.0'
 		);
-		
-		load_textdomain( 'uigen_uploader', trailingslashit(dirname(__File__)) . 'lang/' . 'uigen_uploader' . '-' . get_locale() . '.mo' );
+
 	}
 	
+	
+	/*
+	*  create_options()
+	*
+	*  Create extra options for your field. This is rendered when editing a field.
+	*  The value of $field['name'] can be used (like below) to save extra data to the $field
+	*
+	*  @type	action
+	*  @since	3.6
+	*  @date	23/01/13
+	*
+	*  @param	$field	- an array holding all the field's data
+	*/
+	
+	function create_options( $field )
+	{
+		// defaults?
+		/*
+		$field = array_merge($this->defaults, $field);
+		*/
+		
+		// key is needed in the field names to correctly save the data
+		$key = $field['name'];
+		
+		
+		// Create Field Options HTML
+		?>
+		<tr class="field_option field_option_<?php echo $this->name; ?>">
+			<td class="label">
+				<label><?php _e("AB default value",'acf'); ?></label>
+				<p class="description"><?php _e("true or false value",'acf'); ?></p>
+			</td>
+		<td>
+		<?php
+		
+		do_action('acf/create_field', array(
+			'type'		=>	'checkbox',
+			'name'		=>	'fields['.$key.'][pool_ab]',
+			'value'		=>	$field['pool_ab'],
+			'layout'	=>	'horizontal',
+			'choices'	=>	array(
+				'true' => __('TAK (pole A)'),
+				'false' => __('Nie (pole B)'),
+			)
+		));
+		
+		?>
+	</td>
+</tr>
+		<?php
+		
+	}
 	
 	
 	/*
@@ -60,186 +111,50 @@ class acf_uigen_uploader extends acf_field
 	
 	function create_field( $field )
 	{
-		$plugin_url_uploader = 	plugins_url().'/ACF_frontend_display/js/blueimp-jQuery-File-Upload-d45deb1/';
-				
-		wp_register_script( 'jquery-ui-widget', $plugin_url_uploader.'js/vendor/jquery.ui.widget.js');
-		wp_enqueue_script( 'jquery-ui-widget' );
-
-		wp_register_script( 'jquery-iframe-transport',  $plugin_url_uploader.'js/jquery.iframe-transport.js');
-		wp_enqueue_script( 'jquery-iframe-transport' );	
-
-		wp_register_script( 'jquery-file-upload',  $plugin_url_uploader.'js/jquery.fileupload.js');
-		wp_enqueue_script( 'jquery-file-upload' );
-	?>
-	<style>
-		#progress .bar {background-color:#ddd; padding:3px;}
-	</style>
-		<script>
-			jQuery(document).ready(function($) {
-				$('#fileupload').fileupload({
-					dataType: 'json',
-					done: function (e, data) {		
-						$.each(data.result, function (index, file) {
-							$('<p/>').text(file.name).appendTo(document.body);
-						});
-					},
-					progressall: function (e, data) {	
-						var progress = parseInt(data.loaded / data.total * 100, 10);
-						$('#progress .bar').css(
-							'width',
-							progress + '%'
-						);
-						$('#progress .bar').html(progress);
-					},
-					done: function (e, data) {	
-						$('#progress .bar').css(
-							'width','100%'
-						);
-						
-						//alert(data.result[0].name);
-						
-						$('#progress .bar').html('upload finished');
-						
-						<?php
-							// display uploaded image
-							$upload_dir = wp_upload_dir(); 
-							$prew_url =  $upload_dir['baseurl'].'/uigen_'.date("Y").'/thumbnail/';
-							$full_url =  $upload_dir['baseurl'].'/uigen_'.date("Y").'/';
-							
-						?>
-						var js_imp_path = "<?php echo $prew_url?>"+data.result[0].name;
-						
-						$('#dropzone').css('background-image', 'url("'+js_imp_path+'")'); 
-						$('#thumbnail_message').text('<?php _e( "To change photo upload it again", "myplugin_textdomain" );?>');
-						$('#file_list div').text('File '+ data.result[0].name +' is loaded')
-
-						//alert(js_imp_path);
-							
-						$('#acf-field-uploader').val(js_imp_path);
-						
-						//djqsCodeInjector({lang:'<?php echo ICL_LANGUAGE_CODE?>',post_id:$('#save_post').attr('value'),filename:data.result[0].name},'<?php echo plugins_url().'/uigen/modules/postsManager/ci_add_att_img.php'?>',$('#dropzone'),'preppend'); 
-					},
-					dropZone: $('#dropzone')
-				});					
-				
-				jQuery(document).bind('dragover', function (e) {
-					var dropZone = $('#dropzone'),
-						timeout = window.dropZoneTimeout;
-					if (!timeout) {
-						dropZone.addClass('in');
-					} else {
-						clearTimeout(timeout);
-					}
-					if (e.target === dropZone[0]) {
-						dropZone.addClass('hover');
-					} else {
-						dropZone.removeClass('hover');
-					}
-				/*	window.dropZoneTimeout = setTimeout(function () {						
-						window.dropZoneTimeout = null;
-						dropZone.removeClass('in hover');
-					}, 100);*/
-				});
-				
-				jQuery(document).bind('drop dragover', function (e) {
-					e.preventDefault();
-				});
-
-				/* reload image  in back history */
-				var imgExist = jQuery('.thumbnail_url').text();
-				if(imgExist != ''){
-					$('#dropzone').css('background-image', 'url("'+imgExist+'")'); 
-				}
-
-
-			});
-			</script>
-	<?php
-
-
-
-
-
-		if(!empty($field['mask']))
-			$field['data-mask'] .= $field['mask'];
-		if(!empty($field['mask_type']) && $field['mask_type'] != 'none')
-			$field['data-type'] .= $field['mask_type'];
-			
-		// vars
-		$o = array( 'id', 'class', 'data-mask', 'data-type', 'name', 'value', 'placeholder' );
-		$e = '';
-
-		?>
-			<!-- UPLOADER -->
-			<div>
-						
-			<span class="acf-button grey btn btn-success fileinput-button" id="fileUploadButt" onclick ="javascript:document.getElementById('fileupload').click();">
-	                    <i class="glyphicon glyphicon-plus"></i>
-	                    <span><?php _e("Add files...",'uigen_uploader'); ?></span>
-	                   
-	        </span>
-
-			<input  
-				id="fileupload" 
-				type="file" 
-				style='visibility: hidden; width:5px;' 
-				name="files[]" 
-				data-url="<?php echo $plugin_url_uploader; ?>server/php/?type=<?php echo $fileSubfolder;?>" multiple>
-
-			<div id="file_list"><div class="alert alert-info"><?php _e("file list is empty.",'uigen_uploader'); ?></div></div>
-			
-			<div id="progress"  class="progress col-md-12">
-				<div class="bar" style="width: 0%;"></div>
-			</div> 
-
-		</div>
-		<?
+		// defaults?
+		/*
+		$field = array_merge($this->defaults, $field);
+		*/
 		
-		
-		// maxlength
-		if( $field['maxlength'] !== "" )
-		{
-			$o[] = 'maxlength';
-		}
-		
-		
-		// prepend
-		if( $field['prepend'] !== "" )
-		{
-			$field['class'] .= ' acf-is-prepended';
-			$e .= '<div class="acf-input-prepend">' . $field['prepend'] . '</div>';
-		}
-		
-		
-		// append
-		if( $field['append'] !== "" )
-		{
-			$field['class'] .= ' acf-is-appended';
-			$e .= '<div class="acf-input-append">' . $field['append'] . '</div>';
-		}
-		
-		
-		$e .= '<div class="acf-input-wrap">';
-		$e .= '<input type="text"';
-		
+		// perhaps use $field['pool_ab'] to alter the markup?
+
+
+/*		echo '<pre>';
+		var_dump($field);
+		echo '</pre>';*/
+
+
+		$o = array( 'class', 'data-mask', 'data-type', 'name', 'placeholder');
 		foreach( $o as $k )
 		{
 			$e .= ' ' . $k . '="' . esc_attr( $field[ $k ] ) . '"';	
 		}
-		
-		$e .= ' />';
-		$e .= '</div>';
-		
-		
-		// return
-		echo $e;
+		?>
+
+		<div class="switch-toggle switch-wpadmin">
+
+		  	
+		  
+		  <input id="<?php echo $field['id'];?>1" type="radio" value="true" <? echo $e; if($field['value'] == 'true'){ echo ' checked ';} ?>>
+		  <label for="<?php echo $field['id'];?>1" for="week" onclick="">YES</label>
+
+		  <input id="<?php echo $field['id'];?>2" type="radio" value="false" <? echo $e; if($field['value'] == 'false'){ echo ' checked ';} ?>>
+		  <label for="<?php echo $field['id'];?>2" for="month" onclick="">NO</label>
+
+		  <a></a>
+		</div>
+			
+
+
+	<?php
 	}
+	
 	
 	/*
 	*  input_admin_enqueue_scripts()
 	*
 	*  This action is called in the admin_enqueue_scripts action on the edit screen where your field is created.
-	*  Use this action to add css + javascript to assist your create_field() action.
+	*  Use this action to add CSS + JavaScript to assist your create_field() action.
 	*
 	*  $info	http://codex.wordpress.org/Plugin_API/Action_Reference/admin_enqueue_scripts
 	*  @type	action
@@ -251,66 +166,234 @@ class acf_uigen_uploader extends acf_field
 	{
 		// Note: This function can be removed if not used
 		
-/*		wp_enqueue_script( 'jquery.meiomask', $this->settings['dir'] . '/js/jquery.meiomask.js', array( 'jquery', 'acf-input' ), $this->settings['version'] );
-		wp_enqueue_script( 'meiomask.apply', $this->settings['dir'] . '/js/meiomask.apply.js', array( 'jquery', 'acf-input' ), $this->settings['version'] );*/
+		
+		// register ACF scripts
+		//wp_register_script( 'acf-input-afd_pool_ab', $this->settings['dir'] . 'js/input.js', array('acf-input'), $this->settings['version'] );
+		//wp_register_style( 'acf-input-afd_pool_ab', $this->settings['dir'] . 'css/input.css', array('acf-input'), $this->settings['version'] ); 
+		
+		
+		// scripts
+/*		wp_enqueue_script(array(
+			'acf-input-afd_pool_ab',	
+		));*/
 
+		// styles
+/*		wp_enqueue_style(array(
+			'acf-input-afd_pool_ab',	
+		));*/
+		
+		
 	}
 	
+	
 	/*
-	*  create_options()
+	*  input_admin_head()
 	*
-	*  Create extra options for your field. This is rendered when editing a field.
-	*  The value of $field['name'] can be used (like bellow) to save extra data to the $field
+	*  This action is called in the admin_head action on the edit screen where your field is created.
+	*  Use this action to add CSS and JavaScript to assist your create_field() action.
 	*
-	*  @param	$field	- an array holding all the field's data
-	*
+	*  @info	http://codex.wordpress.org/Plugin_API/Action_Reference/admin_head
 	*  @type	action
 	*  @since	3.6
 	*  @date	23/01/13
 	*/
-	
-	function create_options( $field )
+
+	function input_admin_head()
 	{
+		// Note: This function can be removed if not used
+	}
 	
+	
+	/*
+	*  field_group_admin_enqueue_scripts()
+	*
+	*  This action is called in the admin_enqueue_scripts action on the edit screen where your field is edited.
+	*  Use this action to add CSS + JavaScript to assist your create_field_options() action.
+	*
+	*  $info	http://codex.wordpress.org/Plugin_API/Action_Reference/admin_enqueue_scripts
+	*  @type	action
+	*  @since	3.6
+	*  @date	23/01/13
+	*/
+
+	function field_group_admin_enqueue_scripts()
+	{
+		// Note: This function can be removed if not used
+	}
+
+	
+	/*
+	*  field_group_admin_head()
+	*
+	*  This action is called in the admin_head action on the edit screen where your field is edited.
+	*  Use this action to add CSS and JavaScript to assist your create_field_options() action.
+	*
+	*  @info	http://codex.wordpress.org/Plugin_API/Action_Reference/admin_head
+	*  @type	action
+	*  @since	3.6
+	*  @date	23/01/13
+	*/
+
+	function field_group_admin_head()
+	{
+		// Note: This function can be removed if not used
+	}
 
 
-		// vars
-		$key = $field['name'];
-
-
+	/*
+	*  load_value()
+	*
+		*  This filter is applied to the $value after it is loaded from the db
+	*
+	*  @type	filter
+	*  @since	3.6
+	*  @date	23/01/13
+	*
+	*  @param	$value - the value found in the database
+	*  @param	$post_id - the $post_id from which the value was loaded
+	*  @param	$field - the field array holding all the field options
+	*
+	*  @return	$value - the value to be saved in the database
+	*/
+	
+	function load_value( $value, $post_id, $field )
+	{
+		// Note: This function can be removed if not used
+		return $value;
+	}
+	
+	
+	/*
+	*  update_value()
+	*
+	*  This filter is applied to the $value before it is updated in the db
+	*
+	*  @type	filter
+	*  @since	3.6
+	*  @date	23/01/13
+	*
+	*  @param	$value - the value which will be saved in the database
+	*  @param	$post_id - the $post_id of which the value will be saved
+	*  @param	$field - the field array holding all the field options
+	*
+	*  @return	$value - the modified value
+	*/
+	
+	function update_value( $value, $post_id, $field )
+	{
+		// Note: This function can be removed if not used
+		return $value;
+	}
+	
+	
+	/*
+	*  format_value()
+	*
+	*  This filter is applied to the $value after it is loaded from the db and before it is passed to the create_field action
+	*
+	*  @type	filter
+	*  @since	3.6
+	*  @date	23/01/13
+	*
+	*  @param	$value	- the value which was loaded from the database
+	*  @param	$post_id - the $post_id from which the value was loaded
+	*  @param	$field	- the field array holding all the field options
+	*
+	*  @return	$value	- the modified value
+	*/
+	
+	function format_value( $value, $post_id, $field )
+	{
+		// defaults?
+		/*
+		$field = array_merge($this->defaults, $field);
+		*/
 		
-		?>
-
-<!-- ############################################################ -->
-<!-- ############################################################ -->
-
-<tr class="field_option field_option_<?php echo $this->name; ?>">
-	<td class="label">
-		<label><?php _e("Upload file",'uigen_uploader'); ?></label>
-		<p><?php _e("File Upload widget with multiple file selection, drag&drop support, progress bars, validation and preview images, audio and video for jQuery",'uigen_uploader') ?></p>
-	</td>
-	<td>
-
+		// perhaps use $field['pool_ab'] to alter the $value?
 		
-		<?php 
-		do_action('acf/create_field', array(
-			'type'	=>	'text',
-			'name'	=>	'fields[' .$key.'][uploaded_url]',
-			'value'	=>	$field['uploaded_url'],			
-		));
-		?>
-	</td>
-</tr>
-
-<!-- ############################################################ -->
-<!-- ############################################################ -->
-
-		<?php
 		
+		// Note: This function can be removed if not used
+		return $value;
+	}
+	
+	
+	/*
+	*  format_value_for_api()
+	*
+	*  This filter is applied to the $value after it is loaded from the db and before it is passed back to the API functions such as the_field
+	*
+	*  @type	filter
+	*  @since	3.6
+	*  @date	23/01/13
+	*
+	*  @param	$value	- the value which was loaded from the database
+	*  @param	$post_id - the $post_id from which the value was loaded
+	*  @param	$field	- the field array holding all the field options
+	*
+	*  @return	$value	- the modified value
+	*/
+	
+	function format_value_for_api( $value, $post_id, $field )
+	{
+		// defaults?
+		/*
+		$field = array_merge($this->defaults, $field);
+		*/
+		
+		// perhaps use $field['pool_ab'] to alter the $value?
+		
+		
+		// Note: This function can be removed if not used
+		return $value;
+	}
+	
+	
+	/*
+	*  load_field()
+	*
+	*  This filter is applied to the $field after it is loaded from the database
+	*
+	*  @type	filter
+	*  @since	3.6
+	*  @date	23/01/13
+	*
+	*  @param	$field - the field array holding all the field options
+	*
+	*  @return	$field - the field array holding all the field options
+	*/
+	
+	function load_field( $field )
+	{
+		// Note: This function can be removed if not used
+		return $field;
+	}
+	
+	
+	/*
+	*  update_field()
+	*
+	*  This filter is applied to the $field before it is saved to the database
+	*
+	*  @type	filter
+	*  @since	3.6
+	*  @date	23/01/13
+	*
+	*  @param	$field - the field array holding all the field options
+	*  @param	$post_id - the field group ID (post_type = acf)
+	*
+	*  @return	$field - the modified field
+	*/
+
+	function update_field( $field, $post_id )
+	{
+		// Note: This function can be removed if not used
+		return $field;
 	}
 	
 }
+	
 
-new acf_uigen_uploader();
+
+new acf_afd_pool_ab();
 
 ?>

@@ -223,14 +223,16 @@ function afd_form_head()
 
 
         /* ADF + Forms Actions resoult */
-        call_user_func('fa_realize_form_actions'); 
-        //$fa = fa_realize_form_actions();
 
-        // redirect
-        if(isset($_POST['return']))
-        {
-            wp_redirect($_POST['return']);
-            exit;
+        $afd_resoult = call_user_func('fa_realize_form_actions'); 
+
+        if($afd_resoult['block_redirect'] != true){
+            // redirect
+            if(isset($_POST['return']))
+            {
+                wp_redirect($_POST['return']);
+                exit;
+            }
         }
 
 
