@@ -123,6 +123,46 @@ function afd_frontend_form( $options = array() )
         echo '<div id="message" class="updated"><p>' . $options['updated_message'] . '</p></div>';
     }
     
+
+
+
+        /* IMPORTANT !!! afd bug fix - disable NOW                       */
+        /* This script dont't work in wp_enqueue_script method           */
+        /* afd plugin call to it before wp_enqueue finished load         */
+        //echo '<script src="'.plugins_url().'/advanced-custom-fields/js/input.js" type="text/javascript" charset="utf-8"></script>';  
+        //echo '<script src="'.plugins_url().'/advanced-custom-fields/js/field-group.min.js" type="text/javascript" charset="utf-8"></script>'; 
+        /* ------------------------------------------------------------- */
+       
+
+        // min
+        //$min = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+/*        $min = '';
+    
+        // register acf scripts
+        $scripts = array();
+        $scripts[] = array(
+            'handle'    => 'acf-field-group',
+            'src'       => plugins_url() . "/advanced-custom-fields/js/field-group{$min}.js",
+            'deps'      => array('jquery')
+        );
+        $scripts[] = array(
+            'handle'    => 'acf-input',
+            'src'       => plugins_url() . "/advanced-custom-fields/js/input{$min}.js",
+            'deps'      => array('jquery', 'jquery-ui-core', 'jquery-ui-datepicker')
+        );
+        
+        
+        foreach( $scripts as $script )
+        {
+           // var_dump(' >>>> ',$script['src']);
+            wp_register_script( $script['handle'], $script['src']);
+            wp_enqueue_script(  $script['handle']  );
+        }
+*/
+
+
+
+
     
     // display form
     if( $options['form'] ): ?>
@@ -130,8 +170,8 @@ function afd_frontend_form( $options = array() )
     <?php endif; ?>
     
     <div style="display:none">
-        <script type="text/javascript">
-            //acf.o.post_id = <?php echo is_numeric($options['post_id']) ? $options['post_id'] : '"' . $options['post_id'] . '"'; ?>;
+        <script>
+
         </script>
         <input type="hidden" name="acf_nonce" value="<?php echo wp_create_nonce( 'input' ); ?>" />
         <input type="hidden" name="post_id" value="<?php echo $options['post_id']; ?>" />
@@ -160,10 +200,20 @@ function afd_frontend_form( $options = array() )
         // load options
         $acf['options'] = apply_filters('acf/field_group/get_options', array(), $acf['id']);
         
+        //var_dump($acf['options']);
         
         // load fields
         $fields = apply_filters('acf/field_group/get_fields', array(), $acf['id']);
-        
+         
+        //echo '<pre>'; 
+        //var_dump($fields);
+        //echo '</pre>';
+        ?>
+        <script>
+         var adf = <?php echo json_encode($fields); ?>;
+         console.log(adf);
+        </script>
+        <?php
         
         echo '<div id="acf_' . $acf['id'] . '" class="postbox acf_postbox ' . $acf['options']['layout'] . '">';
         echo '<h3 class="hndle"><span>' . $acf['title'] . '</span></h3>';
@@ -174,8 +224,12 @@ function afd_frontend_form( $options = array() )
         echo '</div></div>';
         
     }}
+    ?>
+    <script>
+
     
-    
+    </script>
+    <?php
     // html after fields
     echo $options['html_after_fields'];
     
@@ -223,16 +277,13 @@ function afd_form_head()
 
 
         /* ADF + Forms Actions resoult */
+        $fa = fa_realize_form_actions();
 
-        $afd_resoult = call_user_func('fa_realize_form_actions'); 
-
-        if($afd_resoult['block_redirect'] != true){
-            // redirect
-            if(isset($_POST['return']))
-            {
-                wp_redirect($_POST['return']);
-                exit;
-            }
+        // redirect
+        if(isset($_POST['return']))
+        {
+            wp_redirect($_POST['return']);
+            exit;
         }
 
 
@@ -251,5 +302,4 @@ function afd_form_head()
     add_action('wp_head', 'acf_form_wp_head');
     
 }
-
 ?>

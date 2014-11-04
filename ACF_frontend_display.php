@@ -374,16 +374,8 @@ add_action( 'save_post', 'afd_save_meta_box_data' );
 /* DISPLAY filter ------------------------------------ */
 
 function afd_add_form_to_frontend_page($content) {
-    
-	/* IMPORTANT !!! afd bug fix - disable NOW                       */
-	/* This script dont't work in wp_enqueue_script method           */
-	/* afd plugin call to it before wp_enqueue finished load         */
-	//echo '<script src="'.plugins_url().'/advanced-custom-fields/js/input.js" type="text/javascript" charset="utf-8"></script>';  
-	//echo '<script src="'.plugins_url().'/advanced-custom-fields/js/field-group.min.js" type="text/javascript" charset="utf-8"></script>'; 
-	/* ------------------------------------------------------------- */
-    
+
     afd_form_head();
-    
     wp_deregister_style( 'wp-admin' );
     
     global $post;
@@ -400,19 +392,34 @@ function afd_add_form_to_frontend_page($content) {
 	    	if( empty($args) == true){
 			
 				/* afd_frontend_form() is afd_form() extended method */
-				afd_frontend_form();
+				//afd_frontend_form();
+				acf_form(); 
 
 			}else{
 
 				/* afd_frontend_form() is afd_form() extended method */
-				afd_frontend_form($args);
+				//afd_frontend_form($args);
+				acf_form($args); 
 
 			}
 
 	    echo '</div>';
 	}
 
-
 }
 add_filter( 'the_content', 'afd_add_form_to_frontend_page', 6);
+
+function acf_js_init()
+{
+	/* this actior included acf scripts with official documentation:         */
+	/* http://www.advancedcustomfields.com/resources/create-a-front-end-form/   */
+	/* scripts list: 'jquery','jquery-ui-core','jquery-ui-tabs','jquery-ui-sortable','wp-color-picker','thickbox','media-upload','acf-input','acf-datepicker',	*/
+	/* style list: 'thickbox', 'wp-color-picker', 'acf-global', 'acf-input', 'acf-datepicker',	*/
+	
+	/* Conditional Logic */
+	$output="<script type='text/javascript' src='http://getblockbox.com/ACF_frontend/wp-content/plugins/advanced-custom-fields/js/input.min.js?ver=4.3.9'></script>";
+	$output.="<link rel='stylesheet' id='acf-input-css'  href='http://getblockbox.com/ACF_frontend/wp-content/plugins/advanced-custom-fields/css/input.css?ver=4.3.9' type='text/css' media='all' />";
+	echo $output;
+}
+add_action('wp_head','acf_js_init');
 ?>
