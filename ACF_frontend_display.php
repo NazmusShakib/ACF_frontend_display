@@ -38,7 +38,7 @@ require_once( plugin_dir_path( __FILE__ ) . '/inc/afd_acf_extend_api.php' );
 /* ACF EXTENTION - INIT UPLAOAD FILE */
 function afd_upload_field() {
 	
-	//require_once( plugin_dir_path( __FILE__ ) . '/fields-pack/field-upload-file.php');
+	require_once( plugin_dir_path( __FILE__ ) . '/fields-pack/field-upload-file.php');
 	require_once( plugin_dir_path( __FILE__ ) . '/fields-pack/field-poolAB-file.php');
 }
 add_action('acf/register_fields', 'afd_upload_field');
@@ -418,9 +418,24 @@ function acf_js_init()
 
 	/* Conditional Logic */
 	$path = plugins_url() . '/advanced-custom-fields/';
-	$output="<script type='text/javascript' src='".$path."js/input.min.js?ver=4.3.9'></script>";
+	$output = '';
+	
+	$output.="<script type='text/javascript' src='".$path."js/input.min.js?ver=4.3.9'></script>";
 	$output.="<link rel='stylesheet' id='acf-input-css'  href='".$path."css/input.css?ver=4.3.9' type='text/css' media='all' />";
+	$output.= '<script>acf.o = {}; acf.screen = {}; acf.o.post_id = 0; acf.screen.post_id = 0;</script>';
+
+
+
+
+
 	echo $output;
 }
 add_action('wp_head','acf_js_init');
+
+
+
+
+
+
+
 ?>
