@@ -1,4 +1,4 @@
-# ACF Frontend form
+# ACF Frontend Display
 
 ![banner](https://github.com/dadmor/ACF_frontend_display/blob/master/banner-772x250.png)
 
