@@ -12,8 +12,8 @@
 
 # Features
 
-* Frontend file upload field 
-* Frontend toogle swither field
+* Frontend file upload field <a href="https://github.com/dadmor/ACF_frontend_display/wiki/ACF-frontend-display-Pack"> [screens] </a>
+* Frontend toogle swither field <a href="https://github.com/dadmor/ACF_frontend_display/wiki/ACF-frontend-display-Pack"> [screens] </a>
 * Frontend hidden field
 
 -----------------------
