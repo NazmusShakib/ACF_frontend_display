@@ -6,6 +6,7 @@
 
 ![screen2](https://github.com/dadmor/ACF_frontend_display/blob/master/screenshot-2.png)
 
+<a href="https://wordpress.org/plugins/acf-frontend-display/">Available on WordPress.org</a>
 
 
 -----------------------
