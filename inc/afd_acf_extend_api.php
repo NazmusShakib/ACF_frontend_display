@@ -26,7 +26,11 @@ function afd_form_permision( $options = array() )
     
     $acfs = apply_filters('acf/get_field_groups', array());
     
+
+
     if( is_array($acfs) ){ foreach( $acfs as $acf ){
+        
+        var_dump( $options['field_groups'] );
         
         // only add the chosen field groups
         if( !in_array( $acf['id'], $options['field_groups'] ) )
@@ -38,6 +42,48 @@ function afd_form_permision( $options = array() )
     // html after fields
 }
 
+function afd_attached_forms_array( $options = array() )
+{
+    global $post;
+    
+    // filter post_id
+    $options['post_id'] = apply_filters('acf/get_post_id', $options['post_id'] );
+    
+    // attributes
+    $options['form_attributes']['class'] .= 'acf-form';
+    
+    // register post box
+    if( empty($options['field_groups']) )
+    {
+        // get field groups
+        $filter = array(
+            'post_id' => $options['post_id']
+        );
+        
+    
+        $options['field_groups'] = array();
+        $options['field_groups'] = apply_filters( 'acf/location/match_field_groups', $options['field_groups'], $filter );
+    }
+
+    // html before fields
+    
+    $acfs = apply_filters('acf/get_field_groups', array());
+
+    if( is_array($acfs) ){ foreach( $acfs as $acf ){
+        
+        // only add the chosen field groups
+        if( !in_array( $acf['id'], $options['field_groups'] ) )
+        {
+             
+        }else{
+           $mapped_ids[] = $acf['id'];
+        }
+       
+    }
+     return $mapped_ids;
+}
+
+}
 
 function afd_form_head()
 {

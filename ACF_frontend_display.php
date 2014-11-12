@@ -85,6 +85,7 @@ function afd_frontend_meta_box_callback( $post ) {
 		echo '<div style="font-weight:bold; border-bottom:1px solid #eee; margin-bottom:10px; padding-bottom:5px">Global properties for '.$post->post_title.'</div>';
 	}
 	/* check is globals are defined (in first fieldgroup) */
+	/* TODO use new function from API afd_attached_forms_array */
 	$fieldsArray = apply_filters('acf/get_field_groups', array());
 	$global_form_id = $fieldsArray[0]['id'];
 
