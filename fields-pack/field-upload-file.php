@@ -74,7 +74,7 @@ class acf_uigen_uploader extends acf_field
 	</style>
 	<script>
 		jQuery(document).ready(function($) {
-			$(".uploader_add_files").click(function(event){
+			$(".perventDef").click(function(event){
 			  event.preventDefault();
 			});
 			
@@ -111,7 +111,7 @@ class acf_uigen_uploader extends acf_field
 						$full_url =  $upload_dir['baseurl'].'/uigen_'.date("Y").'/';
 						
 					?>
-					var js_imp_path = "<?php echo $prew_url?>"+data.result[0].name;
+					var js_imp_path = "<?php echo $full_url?>"+data.result[0].name;
 					$(e['target']).parent().next().children('input').val(js_imp_path);
 
 					$('#dropzone').css('background-image', 'url("'+js_imp_path+'")'); 
@@ -159,7 +159,9 @@ class acf_uigen_uploader extends acf_field
 
 		});
 	</script>
-
+	<div class="acf-taxonomy-field">
+	<div class="categorychecklist-holder" style="padding:10px">
+	
 		<?php
 
 		if(!empty($field['mask']))
@@ -170,31 +172,6 @@ class acf_uigen_uploader extends acf_field
 		// vars
 		$o = array( 'id', 'class', 'data-mask', 'data-type', 'name', 'value', 'placeholder' );
 		$e = '';
-
-		?>
-		<!-- UPLOADER -->
-		<div>
-						
-			<span class="acf-button grey btn btn-success fileinput-button" id="fileUploadButt" onclick ="javascript:document.getElementById('fileupload').click();">
-            	<i class="glyphicon glyphicon-plus"></i>
-            	<span><input class="uploader_add_files" type="submit" value="<?php _e("Add files...",'uigen_uploader'); ?>" /></span>
-	        </span>
-
-			<input  
-				id="fileupload" 
-				type="file" 
-				style='visibility: hidden; width:5px;' 
-				name="files[]" 
-				data-url="<?php echo $plugin_url_uploader; ?>server/php/?type=<?php echo $fileSubfolder;?>" multiple>
-
-			<div id="file_list"><div class="alert alert-info"><?php _e("file list is empty.",'uigen_uploader'); ?></div></div>
-			
-			<div id="progress"  class="progress col-md-12">
-				<div class="bar" style="width: 0%;"></div>
-			</div> 
-
-		</div>
-		<?php
 		
 		
 		// maxlength
@@ -226,14 +203,78 @@ class acf_uigen_uploader extends acf_field
 		foreach( $o as $k )
 		{
 			$e .= ' ' . $k . '="' . esc_attr( $field[ $k ] ) . '"';	
+
+			
+			
+			if( $k == 'value'){
+				echo '<div>';
+				_e("You have added file: ",'uigen_uploader');
+			
+				$f_path = esc_attr( $field[ $k ]);
+				$f_file = basename($f_path); 	
+				echo $f_file;		
+				
+				echo '</div>';
+
+				if(@!is_array(getimagesize(esc_attr( $field[ $k ])))){
+				    echo '<img src="'.esc_attr( $field[ $k ] ).'" />';
+				} 
+				else {
+				    //echo 'faldse';
+				}
+				
+			}
 		}
 		
+		if($f_file != ''){
+			$f_button_add = __("Reload files...",'uigen_uploader');	
+
+			
+
+
+		}else{
+			$f_button_add = __("Add files...",'uigen_uploader');
+		}
+
+
 		$e .= ' />';
 		$e .= '</div>';
 		
 		
+
+ ?>
+		<!-- UPLOADER -->
+		<div>
+						
+			<span id="fileUploadButt" onclick ="javascript:document.getElementById('fileupload').click();">
+            	<i class="glyphicon glyphicon-plus"></i>
+            	<span><input class="uploader_add_files perventDef" type="submit" value="<?php echo $f_button_add; ?>" /></span>
+	        </span>
+
+	        <span><input class="perventDef" type="submit" value="<?php echo _e("Remove",'uigen_uploader') ?>" /></span>
+
+			<input  
+				id="fileupload" 
+				type="file" 
+				style='visibility: hidden; width:5px;' 
+				name="files[]" 
+				data-url="<?php echo $plugin_url_uploader; ?>server/php/?type=<?php echo $fileSubfolder;?>" multiple>
+
+			<div id="file_list"><div class="alert alert-info"><?php _e("Uploaded file list is empty.",'uigen_uploader'); ?></div></div>
+			
+			<div id="progress"  class="progress col-md-12">
+				<div class="bar" style="width: 0%;"></div>
+			</div> 
+
+		</div>
+		<?php
 		// return
 		echo $e;
+	?>
+	</div>
+	</div>
+	<?php	
+
 	}
 	
 	/*

@@ -28,6 +28,10 @@ Upload the ACF Frontend display plugin to your blog, Activate it.
 
 == Changelog ==
 
+= 1.0.3 =
+* Add frontend file upload field
+* Add afd_attached_forms_array() API method
+
 = 1.0.2 =
 * Fix JS errors with Conditional Logic
 * Add field poolAB

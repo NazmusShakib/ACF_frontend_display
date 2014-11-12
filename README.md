@@ -8,15 +8,28 @@
 
 -----------------------
 
-# Comming soon
+# Features
 
 * Frontend file upload field 
+* Frontend toogle swither field
+* Frontend hidden field
+
+-----------------------
+
+# Comming soon
+
 * Frontend date picker 
 * Frontend color picker
 * Frontend google maps
 * Repeater meta form with taxonomy dictionary (single and multilevel) Storage data with metas (no serial data)
 * Form proccessor used script based on WordPress API. Included class from http://getblockbox.com/executor_sandbox/wp_executor/
 * extended acces to display on front
+
+-----------------------
+
+# ACTIONS
+
+* To realize custom actions on your frontend ACF form tray related plugin <br/> Forms Actions plugin <br/> <a href="https://github.com/dadmor/Forms_actions">https://github.com/dadmor/Forms_actions</a>
 
 -----------------------
 

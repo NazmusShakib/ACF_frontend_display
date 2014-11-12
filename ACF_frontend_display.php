@@ -28,9 +28,17 @@ function afd_fields_lib_init() {
 	/* toggle-switch extra field */
 	wp_register_style( 'toggle-switch-css', plugins_url('/css/toggle-switch.css', __FILE__) );
 	wp_enqueue_style('toggle-switch-css');
-
 }
 add_action('wp_enqueue_scripts', 'afd_fields_lib_init');
+
+function afd_fields_frontend_lib_init() {
+	if ( !is_admin() ) {
+		/* filelds pack css */
+		wp_register_style( 'fields-pack', plugins_url('/css/frontend-fields-pack.css', __FILE__) );
+		wp_enqueue_style('fields-pack');
+	}
+}
+add_action('wp_enqueue_scripts', 'afd_fields_frontend_lib_init');
 
 
 require_once( plugin_dir_path( __FILE__ ) . '/inc/afd_acf_extend_api.php' );
@@ -40,6 +48,7 @@ function afd_upload_field() {
 	
 	require_once( plugin_dir_path( __FILE__ ) . '/fields-pack/field-upload-file.php');
 	require_once( plugin_dir_path( __FILE__ ) . '/fields-pack/field-poolAB-file.php');
+	require_once( plugin_dir_path( __FILE__ ) . '/fields-pack/field-hidden-file.php');
 }
 add_action('acf/register_fields', 'afd_upload_field');
 
@@ -306,14 +315,20 @@ function afd_frontend_meta_box_callback( $post ) {
 		</script><?php
 
 	}else{
-		echo 'add <a href="'.get_bloginfo('home').'/wp-admin/edit.php?post_type=acf">acf form</a> to this post';
+		global $acf;
+		if( $acf == NULL){
+			echo __( 'Install Advanced Custom Fields plugin', 'acf_frontend_display' ).'<br/><a href="https://wordpress.org/plugins/advanced-custom-fields/">'.__( 'Plugin website', 'acf_frontend_display' ).'</a>';
+		}else{
+			echo __( 'Add', 'acf_frontend_display' ).' <a href="'.get_bloginfo('home').'/wp-admin/edit.php?post_type=acf">'.__( 'ACF form', 'acf_frontend_display' ).'</a> '.__( 'to this post', 'acf_frontend_display' );
+		}
+		
 	}
 
 }
 
 /**
  * When the post is saved, saves our custom data.
- *
+ *__( 'Install Advanced Custom Fields plugin', 'acf_frontend_display' ).
  * @param int $post_id The ID of the post being saved.
  */
 function afd_save_meta_box_data( $post_id ) {
@@ -400,6 +415,8 @@ function afd_add_form_to_frontend_page($content) {
 
 				/* afd_frontend_form() is afd_form() extended method */
 				//afd_frontend_form($args);
+				
+
 				acf_form($args); 
 
 			}
