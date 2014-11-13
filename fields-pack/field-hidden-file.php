@@ -84,6 +84,26 @@ class acf_afd_hidden extends acf_field
 		?>
 	</td>
 </tr>
+
+<tr class="field_option field_option_<?php echo $this->name; ?>">
+	<td class="label">
+		<label><?php _e("Forced hidden",'acf'); ?></label>
+		<p><?php _e("Field dont display and access on page, but storage data and send it to ACTIONS",'acf') ?></p>
+	</td>
+	<td>
+		<?php 
+		do_action('acf/create_field', array(
+			'type'	=>	'checkbox',
+			'name'	=>	'fields['.$key.'][forced_hidden]',
+			'value'	=>	$field['forced_hidden'],
+			'choices' => array(
+				'forced_hidden'	=>	__("Forced hidden",'acf'),
+				
+			)
+		));
+		?>
+	</td>
+</tr>
 <?php
 		
 	}
@@ -111,25 +131,27 @@ class acf_afd_hidden extends acf_field
 		// perhaps use $field['pool_ab'] to alter the markup?
 
 
-/*		echo '<pre>';
-		var_dump($field);
-		echo '</pre>';*/
-
-
-		$o = array( 'class', 'data-mask', 'data-type', 'name', 'placeholder');
-		foreach( $o as $k )
-		{
-			$e .= ' ' . $k . '="' . esc_attr( $field[ $k ] ) . '"';	
-		}
-
 		if ( is_admin() ) {
 		     $field_type = 'text';
 		} else {
 		     $field_type = 'hidden';
 		}
-		?>
+
 	  
-		<input id="<?php echo $field['id'];?>" type="<?php echo $field_type; ?>" value="<?php echo $field['value'] ?>" >
+		$o = array( 'class', 'data-mask', 'data-type', 'name', 'value' , 'placeholder');
+		foreach( $o as $k )
+		{
+			$e .= ' ' . $k . '="' . esc_attr( $field[ $k ] ) . '"';	
+		}
+		?>
+
+		  
+		<input id="<?php echo $field['id'];?>1" type="<?php echo $field_type; ?>" <? echo $e; ?>>
+		 
+
+	
+
+
 
 		
 

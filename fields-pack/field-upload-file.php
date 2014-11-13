@@ -195,10 +195,17 @@ class acf_uigen_uploader extends acf_field
 			$field['class'] .= ' acf-is-appended';
 			$e .= '<div class="acf-input-append" >' . $field['append'] . '</div>';
 		}
+
+
+		if ( is_admin() ) {
+		     $field_type = 'text';
+		} else {
+		     $field_type = 'hidden';
+		}
 		
 		
 		$e .= '<div class="acf-input-wrap" >';
-		$e .= '<input type="hidden"';
+		$e .= '<input type="' . $field_type . '"';
 		
 		foreach( $o as $k )
 		{

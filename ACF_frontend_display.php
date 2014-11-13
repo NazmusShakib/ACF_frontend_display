@@ -9,33 +9,35 @@ Version: 1.0.2
 License: GPL2
 */
 
-function afd_alpaca_lib_init() {
+function afd_admin_lib_init() {
 
 	wp_register_script( 'alpaca-js', plugins_url('/js/alpaca-core.min.js', __FILE__) );
 	wp_enqueue_script( 'alpaca-js' );
 
-	wp_register_style( 'alpaca-css', plugins_url('/css/alpaca-wpadmin.css', __FILE__) );
-	wp_enqueue_style('alpaca-css');
+	wp_register_style( 'alpaca-wpadmin-css', plugins_url('/css/alpaca-wpadmin.css', __FILE__) );
+	wp_enqueue_style('alpaca-wpadmin-css');
 
 	/* toggle-switch extra field */
 	wp_register_style( 'toggle-switch-css', plugins_url('/css/toggle-switch.css', __FILE__) );
 	wp_enqueue_style('toggle-switch-css');
 
-}
-add_action('admin_enqueue_scripts', 'afd_alpaca_lib_init');
+	wp_register_script( 'acf-frontend-display-admin', plugins_url('/js/acf-frontend-display-admin.js', __FILE__) );
+	wp_enqueue_script('acf-frontend-display-admin');
 
-function afd_fields_lib_init() {
-	/* toggle-switch extra field */
-	wp_register_style( 'toggle-switch-css', plugins_url('/css/toggle-switch.css', __FILE__) );
-	wp_enqueue_style('toggle-switch-css');
 }
-add_action('wp_enqueue_scripts', 'afd_fields_lib_init');
+add_action('admin_enqueue_scripts', 'afd_admin_lib_init');
 
 function afd_fields_frontend_lib_init() {
 	if ( !is_admin() ) {
 		/* filelds pack css */
 		wp_register_style( 'fields-pack', plugins_url('/css/frontend-fields-pack.css', __FILE__) );
 		wp_enqueue_style('fields-pack');
+
+		wp_register_script( 'acf-frontend-display', plugins_url('/js/acf-frontend-display.js', __FILE__) );
+		wp_enqueue_script('acf-frontend-display');
+
+		wp_register_style( 'toggle-switch-css', plugins_url('/css/toggle-switch.css', __FILE__) );
+		wp_enqueue_style('toggle-switch-css');
 	}
 }
 add_action('wp_enqueue_scripts', 'afd_fields_frontend_lib_init');
@@ -69,9 +71,9 @@ function afd_frontend_add_meta_box() {
 		/* only editors or administrator can display forms */
 		if( current_user_can('edit_others_pages') ) {  
 			if( $screen == 'acf' ){
-				$title_box = __( 'AFD - front form GLOBALS', 'acf_frontend_display' );
+				$title_box = __( 'Display Form', 'acf_frontend_display' );
 			}else{
-				$title_box = __( 'AFD - view form on front of page', 'acf_frontend_display' );
+				$title_box = __( 'Display Form', 'acf_frontend_display' );
 			}
 			/* display ACF frontend metabox */
 			add_meta_box(
@@ -131,14 +133,14 @@ function afd_frontend_meta_box_callback( $post ) {
 		$checked = '';
 	}
 
-	if(afd_form_permision() == true){
+	if( (afd_form_permision() == true) || ($post->post_type == 'acf') ){
 		
 		
 		echo '<input type="hidden" id="afd_create_object" name="afd_create_object" value="'.$create_object.'" size="25" />';
 
 		echo '<input type="checkbox" id="afd_form_render_box_field" name="afd_form_render_box_field" value="true" size="25" '.$checked.'/>';
 		echo '<label for="afd_form_render_box_field">';
-		_e( 'check it to display your ACF form', 'acf_frontend_display' );
+		_e( 'display form on page', 'acf_frontend_display' );
 		echo '</label> ';
 
 		echo '<input type="hidden" id="afd_alpaca_data" name="afd_alpaca_data" value="'.$value_alpaca.'" size="25" />';
@@ -154,10 +156,7 @@ function afd_frontend_meta_box_callback( $post ) {
 			    	"options": {
 			    		"fields": {
 		                	"dependence_one": {
-		                    	"rightLabel": "check it to show extended props"
-		               		},
-		               		"dependence_two": {
-		                    	"rightLabel": "check it to show extra ACTIONS"
+		                    	"rightLabel": "more options"
 		               		},
 		               		"send_email": {
 		                    	"rightLabel": "send email (with next version)",
@@ -177,7 +176,7 @@ function afd_frontend_meta_box_callback( $post ) {
 				      "properties": {
 
 				      	"dependence_one": {
-		                    "title": "More form options?",
+		                    //"title": "More form options?",
 		                    "type": "boolean"
 		                },
 
@@ -269,31 +268,7 @@ function afd_frontend_meta_box_callback( $post ) {
 							"enum": ['standard afd', 'bootstrap', 'contactform7']
 				        },*/
 
-				        "dependence_two": {
-		                    "title": "Extra ACTIONS",
-		                    "type": "boolean"
-		                },
 
-		                "send_email": {
-		                    /*"title": "send email",*/
-		                    "type": "boolean",
-		                    "dependencies": "dependence_two",
-		                     "readonly": true
-		                },
-		                "register_user": {
-		                    /*"title": "register user",*/
-		                    "type": "boolean",
-		                    "dependencies": "dependence_two",
-		                     "readonly": true
-		                 
-		                },
-		                "target_quiz": {
-		                   /* "title": "target quiz",*/
-		                    "type": "boolean",
-		                    "dependencies": "dependence_two",
-		                    "readonly": true
-
-		                },
 		        
 				      }
 				    },
@@ -391,18 +366,18 @@ add_action( 'save_post', 'afd_save_meta_box_data' );
 
 function afd_add_form_to_frontend_page($content) {
 
-    afd_form_head();
-    wp_deregister_style( 'wp-admin' );
-    
-    global $post;
-	$args = json_decode( urldecode ( get_post_meta($post->ID,'_meta_afd_form_render_box_alpaca', true )), true );
-	unset($args['dependence_one']);
-
-    echo '<div>'.$content.'<div>';
+	global $post;
 
     /* check display guardian */
     if( get_post_meta( $post->ID, '_meta_afd_form_render_box_key', true) == 'true'){
-	   	
+	   	afd_form_head();
+	    wp_deregister_style( 'wp-admin' );
+	    
+
+		$args = json_decode( urldecode ( get_post_meta($post->ID,'_meta_afd_form_render_box_alpaca', true )), true );
+		unset($args['dependence_one']);
+
+	    echo '<div>'.$content.'<div>';
 	   	echo '<div class="site-main">';
 
 	    	if( empty($args) == true){
@@ -433,20 +408,18 @@ function acf_js_init()
 	/* http://www.advancedcustomfields.com/resources/create-a-front-end-form/   */
 	/* scripts list: 'jquery','jquery-ui-core','jquery-ui-tabs','jquery-ui-sortable','wp-color-picker','thickbox','media-upload','acf-input','acf-datepicker',	*/
 	/* style list: 'thickbox', 'wp-color-picker', 'acf-global', 'acf-input', 'acf-datepicker',	*/
+	global $post;
+	if( get_post_meta( $post->ID, '_meta_afd_form_render_box_key', true) == 'true'){
+		/* Conditional Logic */
+		$path = plugins_url() . '/advanced-custom-fields/';
+		$output = '';
+		
+		$output.="<script type='text/javascript' src='".$path."js/input.min.js?ver=4.3.9'></script>";
+		$output.="<link rel='stylesheet' id='acf-input-css'  href='".$path."css/input.css?ver=4.3.9' type='text/css' media='all' />";
+		$output.= '<script>acf.o = {}; acf.screen = {}; acf.o.post_id = 0; acf.screen.post_id = 0;</script>';
 
-	/* Conditional Logic */
-	$path = plugins_url() . '/advanced-custom-fields/';
-	$output = '';
-	
-	$output.="<script type='text/javascript' src='".$path."js/input.min.js?ver=4.3.9'></script>";
-	$output.="<link rel='stylesheet' id='acf-input-css'  href='".$path."css/input.css?ver=4.3.9' type='text/css' media='all' />";
-	$output.= '<script>acf.o = {}; acf.screen = {}; acf.o.post_id = 0; acf.screen.post_id = 0;</script>';
-
-
-
-
-
-	echo $output;
+		echo $output;
+	}
 }
 add_action('wp_head','acf_js_init');
 
