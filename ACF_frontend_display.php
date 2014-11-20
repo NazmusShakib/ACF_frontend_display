@@ -152,7 +152,7 @@ function afd_frontend_meta_box_callback( $post ) {
 			    /* ----------------------------------------------------------------------- */	
 			    	<?php if($value_alpaca != ''){ ?>
 			    	"data" : <?php echo urldecode ( $value_alpaca );?>,
-			    	<? } ?>
+			    	<?php } ?>
 			    	"options": {
 			    		"fields": {
 		                	"dependence_one": {
