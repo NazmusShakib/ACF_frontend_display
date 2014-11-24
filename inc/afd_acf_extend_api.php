@@ -272,8 +272,17 @@ function afd_frontend_form( $options = array() )
         // nie trzeba tego robić - forcehidden działa :)
         //$fields = forced_hidden($fields);
         /* ----------------------------- */
-
-
+        
+        /* ----------------------------- */
+        /* Change field class            */
+        //echo '<pre>';
+        //var_dump($fields);
+        //echo '</pre>';
+        if($options['css_type'] == 'bootstrap'){
+            foreach ($fields as $key => $value) {
+                $fields[$key]['class'] = 'form-control';
+            }
+        }
         do_action('acf/create_fields', $fields, $options['post_id']);
         
         echo '</div></div>';

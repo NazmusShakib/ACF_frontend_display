@@ -5,7 +5,7 @@ Plugin URI: https://github.com/dadmor/ACF_frontend_display
 Description: WordPress plugin to display afd form on frontend your site. This Plugin enhancing the Advanced Custom Fields (ACF) 
 Author: gdurtan
 Author URI: grzegorz.durtan.pl
-Version: 1.0.2
+Version: 1.0.6
 License: GPL2
 */
 
@@ -29,7 +29,9 @@ add_action('admin_enqueue_scripts', 'afd_admin_lib_init');
 
 function afd_fields_frontend_lib_init() {
 	if ( !is_admin() ) {
-		/* filelds pack css */
+
+		wp_enqueue_script('jquery');
+
 		wp_register_style( 'fields-pack', plugins_url('/css/frontend-fields-pack.css', __FILE__) );
 		wp_enqueue_style('fields-pack');
 
@@ -154,19 +156,19 @@ function afd_frontend_meta_box_callback( $post ) {
 			    	"data" : <?php echo urldecode ( $value_alpaca );?>,
 			    	<?php } ?>
 			    	"options": {
+
 			    		"fields": {
 		                	"dependence_one": {
 		                    	"rightLabel": "more options"
 		               		},
-		               		"send_email": {
-		                    	"rightLabel": "send email (with next version)",
+		               		"dependence_two": {
+		                    	"rightLabel": "Skin (CSS)"
 		               		},
-		               		"register_user": {
-		                    	"rightLabel": "register user (with next version)",
+		               		"css_type": {
+		                    	//"rightLabel": "clasic ACF CSS",
 		               		},
-		               		"target_quiz": {
-		                    	"rightLabel": "target quiz (with next version)"
-		               		},
+
+
 		               	}
 			    	},
 			    	"schema": {
@@ -243,12 +245,12 @@ function afd_frontend_meta_box_callback( $post ) {
 							"dependencies": "dependence_one",
 							"description": "A string message which id displayed above the form after being redirected"
 				        },
-				        /*"label_placement": {
+				        "label_placement": {
 							"type": "string",
 							"title": "Label placement",
 							"dependencies": "dependence_one",
 							"enum": ['top', 'left']
-				        },*/
+				        },
 				        /*"instruction_placement": {
 							"type": "string",
 							"title": "Instruction placement",
@@ -261,11 +263,17 @@ function afd_frontend_meta_box_callback( $post ) {
 							"dependencies": "dependence_one",
 							"enum": ['div', 'tr', 'ul', 'ol', 'dl']
 				        },
-				       /* "css_type": {
+
+				        /*"dependence_two": {
+		                    //"title": "More form options?",
+		                    "type": "boolean"
+		                },
+
+				        "css_type": {
 							"type": "string",
-							"title": "Field element",
-							"dependencies": "dependence_one",
-							"enum": ['standard afd', 'bootstrap', 'contactform7']
+							//"title": "Field element",
+							"dependencies": "dependence_two",
+							"enum": ['standard acf', 'bootstrap']
 				        },*/
 
 
@@ -367,6 +375,7 @@ add_action( 'save_post', 'afd_save_meta_box_data' );
 function afd_add_form_to_frontend_page($content) {
 
 	global $post;
+	echo '<div>'.$content.'<div>';
 
     /* check display guardian */
     if( get_post_meta( $post->ID, '_meta_afd_form_render_box_key', true) == 'true'){
@@ -377,23 +386,18 @@ function afd_add_form_to_frontend_page($content) {
 		$args = json_decode( urldecode ( get_post_meta($post->ID,'_meta_afd_form_render_box_alpaca', true )), true );
 		unset($args['dependence_one']);
 
-	    echo '<div>'.$content.'<div>';
+	   
 	   	echo '<div class="site-main">';
 
 	    	if( empty($args) == true){
-			
 				/* afd_frontend_form() is afd_form() extended method */
-				//afd_frontend_form();
-				acf_form(); 
-
+				afd_frontend_form();
+				//acf_form(); 
 			}else{
 
 				/* afd_frontend_form() is afd_form() extended method */
-				//afd_frontend_form($args);
-				
-
-				acf_form($args); 
-
+				afd_frontend_form($args);
+				//acf_form($args); 
 			}
 
 	    echo '</div>';
@@ -408,6 +412,7 @@ function acf_js_init()
 	/* http://www.advancedcustomfields.com/resources/create-a-front-end-form/   */
 	/* scripts list: 'jquery','jquery-ui-core','jquery-ui-tabs','jquery-ui-sortable','wp-color-picker','thickbox','media-upload','acf-input','acf-datepicker',	*/
 	/* style list: 'thickbox', 'wp-color-picker', 'acf-global', 'acf-input', 'acf-datepicker',	*/
+	
 	global $post;
 	if( get_post_meta( $post->ID, '_meta_afd_form_render_box_key', true) == 'true'){
 		/* Conditional Logic */
@@ -421,12 +426,3 @@ function acf_js_init()
 		echo $output;
 	}
 }
-add_action('wp_head','acf_js_init');
-
-
-
-
-
-
-
-?>
