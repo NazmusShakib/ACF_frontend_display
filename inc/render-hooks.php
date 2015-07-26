@@ -1,4 +1,15 @@
 <?php
+
+function debug_to_con($data) {
+	if(is_array($data) || is_object($data))
+	{
+		echo("<script>console.log('PHP: ".json_encode($data)."');</script>");
+	} else {
+		echo("<script>console.log('PHP: ".$data."');</script>");
+	}
+}
+
+
 function init_acfHeader(){
 	
 	global $post;
@@ -34,6 +45,8 @@ function render_acfForm($content){
 		global $post;
 		$render_form = true;
 
+
+
 		/* form are display only for pages and posts when edit */
 		if(($post->post_type == 'page')||($_GET['pid']!='')||($post->post_type == 'post')){
 			
@@ -45,10 +58,14 @@ function render_acfForm($content){
 				$args = json_decode( urldecode ( get_post_meta($args_id[0],'_meta_afd_form_render_box_alpaca', true )), true );
 
 				$rule = get_post_meta($args_id[0],'rule',true);
-				if($rule['param'] != 'post'){
-					return $content;
+				
+				// debug_to_con($rule['param']);
+				// debug_to_con($content);
+			/*	if($rule['param'] != 'post' || $rule['param'] != 'page'){
+					// debug_to_con($content);
+					return $content; 
 				}
-
+*/
 				if($_GET['acf_message'] != ''){
 					
 					print_r('<div class="msg message">'.$_GET['acf_message'].'</div>');
@@ -81,7 +98,7 @@ function render_acfForm($content){
 						if($post->post_author != get_current_user_id()){
 							
 							$content = '<div class="msg message">Access disabled</div>';
-							return $content;
+							//return $content;
 						
 						}
 
@@ -94,7 +111,7 @@ function render_acfForm($content){
 					if ( !is_user_logged_in() ) {
 						
 						$content = '<div class="msg message">Login to display form</div>';
-						return $content;
+						//return $content;
 					}
 				}
 
@@ -108,6 +125,8 @@ function render_acfForm($content){
 		}
 	
 	}
+
+	// var_dump($render_form);
 
 	if($render_form == true){
 
