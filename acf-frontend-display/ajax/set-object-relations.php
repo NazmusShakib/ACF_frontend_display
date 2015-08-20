@@ -35,7 +35,7 @@
 	$current_user = get_current_user_id();
 
 	if($current_user == 0){
-		echo '{"warning":"Musisz być zaogowany, żeby wykonać tą akcję"}';
+		echo '{"warning":"Musisz być zaogowany, żeby wykonać tę akcję"}';
 		die();
 	}
 
